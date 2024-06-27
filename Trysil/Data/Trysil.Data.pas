@@ -51,6 +51,8 @@ type
     procedure SetAsDateTime(const Value: TDateTime); virtual; abstract;
     function GetAsGuid: TGUID; virtual; abstract;
     procedure SetAsGuid(const Value: TGUID); virtual; abstract;
+    function GetAsBlob : TBytes; virtual; abstract;
+    procedure SetAsBlob(const Value : TBytes); virtual; abstract;
   public
     procedure Clear; virtual; abstract;
 
@@ -63,6 +65,7 @@ type
     property AsBoolean: Boolean read GetAsBoolean write SetAsBoolean;
     property AsDateTime: TDateTime read GetAsDateTime write SetAsDateTime;
     property AsGuid: TGUID read GetAsGuid write SetAsGuid;
+    property AsBlob: TBytes read GetAsBlob write SetAsBlob;
   end;
 
 { TTReader }

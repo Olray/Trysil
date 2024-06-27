@@ -421,13 +421,32 @@ end;
 { TTBlobParameter }
 
 procedure TTBlobParameter.SetValue(const AEntity: TObject);
+var
+  LValue: TTValue;
+  LNullable: TTNullable<TBytes>;
 begin
-  raise ETException.Create(SBlobParameterValue);
+  LValue := FColumnMap.Member.GetValue(AEntity);
+  if FColumnMap.Member.IsNullable then
+  begin
+    LNullable := LValue.AsType<TTNullable<TBytes>>();
+    if LNullable.IsNull then
+      FParam.Clear()
+    else
+      FParam.AsBlob := LNullable;
+  end
+  else
+    FParam.AsBlob := LValue.AsType<TBytes>();
+
+  // logging not implemented for Blob
+//  LogParameter(FColumnMap.Name, FParam.AsString);
 end;
 
 procedure TTBlobParameter.SetValue(const AValue: TTValue);
 begin
-  raise ETException.Create(SBlobParameterValue);
+  FParam.AsBlob := AValue.AsType<TBytes>();
+
+  // logging not implemented for Blob
+//  LogParameter(FParam.Name, FParam.AsGuid.ToString);
 end;
 
 { TTParameterFactory }

@@ -60,6 +60,8 @@ type
     procedure SetAsDateTime(const AValue: TDateTime); override;
     function GetAsGuid: TGUID; override;
     procedure SetAsGuid(const AValue: TGUID); override;
+    function GetAsBlob : TBytes; override;
+    procedure SetAsBlob(const Value : TBytes); override;
   public
     constructor Create(const AParam: TFDParam);
 
@@ -218,6 +220,21 @@ end;
 procedure TTFDParam.SetAsGuid(const AValue: TGUID);
 begin
   FParam.AsGUID := AValue;
+end;
+
+function TTFDParam.GetAsBlob : TBytes;
+var len : LongWord;
+var ptr : PByte;
+begin
+  if not FParam.GetBlobRawData(len, ptr) then
+    raise Exception.Create('Cannot access blob data from parameter');
+  SetLength(Result, len);
+  Move(ptr^, PByte(Result)^, size);
+end;
+
+procedure TTFDParam.SetAsBlob(const Value : TBytes);
+begin
+  FParam.SetBlobRawData(Length(Value), PByte(Value));
 end;
 
 { TTFireDACDriver }
