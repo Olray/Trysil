@@ -23,6 +23,7 @@ uses
   FireDAC.Phys,
 
   Trysil.Types,
+  Trysil.Consts,
   Trysil.Filter,
   Trysil.Exceptions,
   Trysil.Metadata,
@@ -227,7 +228,7 @@ var len : LongWord;
 var ptr : PByte;
 begin
   if not FParam.GetBlobRawData(len, ptr) then
-    raise Exception.Create('Cannot access blob data from parameter');
+    raise Exception.Create(SBlobParameterValueError);
   SetLength(Result, len);
   Move(ptr^, PByte(Result)^, size);
 end;
