@@ -61,8 +61,7 @@ type
     procedure SetAsDateTime(const AValue: TDateTime); override;
     function GetAsGuid: TGUID; override;
     procedure SetAsGuid(const AValue: TGUID); override;
-    function GetAsBlob : TBytes; override;
-    procedure SetAsBlob(const Value : TBytes); override;
+    procedure SetAsBytes(const AValue: TBytes); override;
   public
     constructor Create(const AParam: TFDParam);
 
@@ -223,19 +222,18 @@ begin
   FParam.AsGUID := AValue;
 end;
 
-function TTFDParam.GetAsBlob : TBytes;
-var len : LongWord;
-var ptr : PByte;
+procedure TTFDParam.SetAsBytes(const AValue: TBytes);
+var
+  LStream: TMemoryStream;
 begin
-  if not FParam.GetBlobRawData(len, ptr) then
-    raise Exception.Create(SBlobParameterValueError);
-  SetLength(Result, len);
-  Move(ptr^, PByte(Result)^, size);
-end;
-
-procedure TTFDParam.SetAsBlob(const Value : TBytes);
-begin
-  FParam.SetBlobRawData(Length(Value), PByte(Value));
+  LStream := TMemoryStream.Create;
+  try
+    LStream.Write(AValue, Length(AValue));
+    LStream.Position := 0;
+    FParam.LoadFromStream(LStream, FParam.DataType);
+  finally
+    LStream.Free;
+  end;
 end;
 
 { TTFireDACDriver }
